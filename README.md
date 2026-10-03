@@ -80,7 +80,7 @@ OpFunctionEnd
 
 ## Host side
 
-A 2 KB host-visible, host-coherent buffer with `STORAGE_BUFFER | SHADER_DEVICE_ADDRESS` usage, allocated with `VK_MEMORY_ALLOCATE_DEVICE_ADDRESS_BIT`, zeroed. Its device address goes in an 8-byte push constant, then one `vkCmdDispatch(1, 1, 1)`, submit, `vkQueueWaitIdle`, and word 191 is read back. Vulkan 1.3 device with `bufferDeviceAddress` and `shaderInt64` enabled, no descriptor sets. The runner is `run.c`, about 130 lines of C for Linux and Windows.
+A 2 KB host-visible, host-coherent buffer with `STORAGE_BUFFER | SHADER_DEVICE_ADDRESS` usage, allocated with `VK_MEMORY_ALLOCATE_DEVICE_ADDRESS_BIT`, zeroed. Its device address goes in an 8-byte push constant, then one `vkCmdDispatch(1, 1, 1)` followed by a compute-shader-write to host-read memory barrier, submit, `vkQueueWaitIdle`, and word 191 is read back. Vulkan 1.3 device with `bufferDeviceAddress` and `shaderInt64` enabled, no descriptor sets. The runner is `run.c`, about 130 lines of C for Linux and Windows.
 
 ## Workaround
 

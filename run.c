@@ -23,7 +23,7 @@ F(vkGetPhysicalDeviceMemoryProperties); F(vkCreateDevice); F(vkGetDeviceQueue); 
 F(vkGetBufferMemoryRequirements); F(vkAllocateMemory); F(vkBindBufferMemory); F(vkMapMemory);
 F(vkGetBufferDeviceAddress); F(vkCreateShaderModule); F(vkCreatePipelineLayout); F(vkCreateComputePipelines);
 F(vkCreateCommandPool); F(vkAllocateCommandBuffers); F(vkBeginCommandBuffer); F(vkCmdBindPipeline);
-F(vkCmdPushConstants); F(vkCmdDispatch); F(vkEndCommandBuffer); F(vkQueueSubmit); F(vkQueueWaitIdle);
+F(vkCmdPushConstants); F(vkCmdDispatch); F(vkCmdPipelineBarrier); F(vkEndCommandBuffer); F(vkQueueSubmit); F(vkQueueWaitIdle);
 
 int main(int argc, char** argv) {
   void* lib = LIB();
@@ -39,7 +39,7 @@ int main(int argc, char** argv) {
   GI(vkAllocateMemory); GI(vkBindBufferMemory); GI(vkMapMemory); GI(vkGetBufferDeviceAddress);
   GI(vkCreateShaderModule); GI(vkCreatePipelineLayout); GI(vkCreateComputePipelines); GI(vkCreateCommandPool);
   GI(vkAllocateCommandBuffers); GI(vkBeginCommandBuffer); GI(vkCmdBindPipeline); GI(vkCmdPushConstants);
-  GI(vkCmdDispatch); GI(vkEndCommandBuffer); GI(vkQueueSubmit); GI(vkQueueWaitIdle);
+  GI(vkCmdDispatch); GI(vkCmdPipelineBarrier); GI(vkEndCommandBuffer); GI(vkQueueSubmit); GI(vkQueueWaitIdle);
 
   uint32_t n = 8;
   VkPhysicalDevice pds[8];
@@ -100,6 +100,10 @@ int main(int argc, char** argv) {
     vkCmdBindPipeline(cb, VK_PIPELINE_BIND_POINT_COMPUTE, pipe);
     vkCmdPushConstants(cb, pl, VK_SHADER_STAGE_COMPUTE_BIT, 0, 8, &addr);
     vkCmdDispatch(cb, 1, 1, 1);
+    // Make the shader's writes visible to the host before it reads word 191.
+    vkCmdPipelineBarrier(cb, VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT, VK_PIPELINE_STAGE_HOST_BIT, 0, 1,
+      &(VkMemoryBarrier){ VK_STRUCTURE_TYPE_MEMORY_BARRIER, .srcAccessMask = VK_ACCESS_SHADER_WRITE_BIT, .dstAccessMask = VK_ACCESS_HOST_READ_BIT },
+      0, NULL, 0, NULL);
     CK(vkEndCommandBuffer(cb));
     CK(vkQueueSubmit(q, 1, &(VkSubmitInfo){ VK_STRUCTURE_TYPE_SUBMIT_INFO, .commandBufferCount = 1, .pCommandBuffers = &cb }, NULL));
     CK(vkQueueWaitIdle(q));
