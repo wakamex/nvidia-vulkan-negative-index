@@ -1,0 +1,61 @@
+; SPIR-V
+; Version: 1.5
+; Generator: Khronos Slang Compiler; 0
+; Bound: 28
+; Schema: 0
+OpCapability PhysicalStorageBufferAddresses
+OpCapability Int64
+OpCapability Shader
+OpExtension "SPV_KHR_physical_storage_buffer"
+OpMemoryModel PhysicalStorageBuffer64 GLSL450
+OpEntryPoint GLCompute %main "main" %out
+OpExecutionMode %main LocalSize 1 1 1
+
+; Debug Information
+OpSource Slang 1
+OpName %cbuffer__t "cbuffer__t"                     ; id %3
+OpMemberName %cbuffer__t 0 "__member0"
+OpName %out "out"                                   ; id %2
+OpName %sp "sp"                                     ; id %4
+OpName %sp_0 "sp"                                   ; id %5
+OpName %main "main"                                 ; id %1
+
+; Annotations
+OpDecorate %_ptr_PhysicalStorageBuffer_ulong ArrayStride 8
+OpDecorate %cbuffer__t Block
+OpMemberDecorate %cbuffer__t 0 Offset 0
+
+; Types, variables and constants
+%void = OpTypeVoid
+%8 = OpTypeFunction %void
+%ulong = OpTypeInt 64 0
+%_ptr_PhysicalStorageBuffer_ulong = OpTypePointer PhysicalStorageBuffer %ulong  ; ArrayStride 8
+%cbuffer__t = OpTypeStruct %_ptr_PhysicalStorageBuffer_ulong                    ; Block
+%_ptr_PushConstant_cbuffer__t = OpTypePointer PushConstant %cbuffer__t
+%int = OpTypeInt 32 1
+%int_0 = OpConstant %int 0
+%_ptr_PushConstant__ptr_PhysicalStorageBuffer_ulong = OpTypePointer PushConstant %_ptr_PhysicalStorageBuffer_ulong
+%int_200 = OpConstant %int 200
+%long = OpTypeInt 64 1
+%long_5 = OpConstant %long 5
+%ulong_22 = OpConstant %ulong 22
+%long_10 = OpConstant %long 10
+%int_191 = OpConstant %int 191
+%long_n5 = OpConstant %long -5
+%out = OpVariable %_ptr_PushConstant_cbuffer__t PushConstant
+
+; Function main
+%main = OpFunction %void None %8
+%21 = OpLabel
+%22 = OpAccessChain %_ptr_PushConstant__ptr_PhysicalStorageBuffer_ulong %out %int_0
+%23 = OpLoad %_ptr_PhysicalStorageBuffer_ulong %22
+%sp = OpPtrAccessChain %_ptr_PhysicalStorageBuffer_ulong %23 %int_200
+%24 = OpPtrAccessChain %_ptr_PhysicalStorageBuffer_ulong %sp %long_5
+OpStore %24 %ulong_22 Aligned 8
+%sp_0 = OpPtrAccessChain %_ptr_PhysicalStorageBuffer_ulong %sp %long_10
+%25 = OpPtrAccessChain %_ptr_PhysicalStorageBuffer_ulong %23 %int_191
+%26 = OpPtrAccessChain %_ptr_PhysicalStorageBuffer_ulong %sp_0 %long_n5
+%27 = OpLoad %ulong %26 Aligned 8
+OpStore %25 %27 Aligned 8
+OpReturn
+OpFunctionEnd
